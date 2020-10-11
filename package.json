@@ -1,0 +1,9 @@
+{
+  "name": "rr-labels-webhook",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "axios": "^0.20.0"
+  }
+}
