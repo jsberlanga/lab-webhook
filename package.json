@@ -1,9 +1,13 @@
 {
   "name": "rr-labels-webhook",
   "version": "1.0.0",
-  "main": "index.js",
   "license": "UNLICENSED",
   "dependencies": {
     "axios": "^0.20.0"
+  },
+  "scripts": {
+    "zip": "zip -r function.zip . -q",
+    "lambda:update": "aws lambda update-function-code --function-name rr-labels-webhook --region eu-central-1 --zip-file fileb://function.zip",
+    "deploy": "yarn zip && yarn lambda:update"
   }
 }

@@ -1,6 +1,7 @@
 const axios = require("axios");
+const { LABEL_REVIEW_WANTED } = require("./constants");
 
-const handleLabeledReviewWanted = (event) => {
+const handleLabeledReviewWanted = async (event) => {
   const getMessageBlock = ({ html_url, title }) =>
     encodeURI(
       JSON.stringify([
@@ -8,25 +9,27 @@ const handleLabeledReviewWanted = (event) => {
           type: "section",
           text: {
             type: "mrkdwn",
-            text: `*👋🏻 An issue has been tagged for review.* Please take a look 👉🏻 *<${html_url} | ${
+            text: `*👋🏻 An issue has been tagged for review.*\n _Please take a look 👉🏻 *<${html_url} | ${
               title.length > 50 ? title.substr(0, 50) + "..." : title
-            }>*`,
+            }>_*`,
           },
         },
       ])
     );
 
-  return axios.get(
+  const { data } = await axios.get(
     `https://slack.com/api/chat.postMessage?token=${
       process.env.SLACK_OAUTH_TOKEN
     }&channel=${process.env.SLACK_CHANNEL}&blocks=${getMessageBlock(
       event.issue
     )}&pretty=1`
   );
+
+  return data;
 };
 
-const handleClosedWithFeedbackLabel = (event) => {
-  return axios.delete(
+const handleClosedWithFeedbackLabel = async (event) => {
+  const { data } = await axios.delete(
     `https://github.schibsted.io/api/v3/repos/rnd/Production/issues/${event.issue.number}/labels/${LABEL_REVIEW_WANTED}`,
     {
       headers: {
@@ -34,6 +37,8 @@ const handleClosedWithFeedbackLabel = (event) => {
       },
     }
   );
+
+  return data;
 };
 
 module.exports = {
